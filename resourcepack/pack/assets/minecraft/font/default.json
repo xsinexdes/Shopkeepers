@@ -1,0 +1,44 @@
+{
+ "providers": [
+  {
+   "type": "bitmap",
+   "file": "shopkeepers:font/bg_market.png",
+   "ascent": 13,
+   "height": 256,
+   "chars": [
+    "\ue000"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "shopkeepers:font/bg_graph.png",
+   "ascent": 13,
+   "height": 256,
+   "chars": [
+    "\ue001"
+   ]
+  },
+  {
+   "type": "bitmap",
+   "file": "shopkeepers:font/bg_bank.png",
+   "ascent": 13,
+   "height": 256,
+   "chars": [
+    "\ue002"
+   ]
+  },
+  {
+   "type": "space",
+   "advances": {
+    "\uf801": -1,
+    "\uf802": -2,
+    "\uf804": -4,
+    "\uf808": -8,
+    "\uf810": -16,
+    "\uf820": -32,
+    "\uf840": -64,
+    "\uf880": -128
+   }
+  }
+ ]
+}
