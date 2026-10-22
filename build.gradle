@@ -140,10 +140,9 @@ subprojects {
 
 		mavenCentral()
 
-		// Bukkit, Spigot-API
-		maven { url = 'https://spigotmc.org' }
-		// Repositorio requerido para compilar de forma remota en GitHub Actions:
-		maven { url = 'https://spigotmc.org' }
+		// Repositorios oficiales de SpigotMC (Requeridos para GitHub Actions)
+		maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+		maven { url = 'https://hub.spigotmc.org/nexus/content/groups/public/' }
 	}
 
 	// Shared plugin / task configurations:
