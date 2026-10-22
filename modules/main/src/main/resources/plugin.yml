@@ -7,7 +7,7 @@ website: '${dboUrl}'
 softdepend: [Multiverse-Core, My Worlds, Transporter, Towny, WorldGuard, Citizens, Vault, Gringotts, ChestShop]
 
 main: com.nisovin.shopkeepers.SKShopkeepersPlugin
-api-version: '1.20.6'
+api-version: '1.21'
 
 commands:
     shopkeeper:
@@ -165,10 +165,6 @@ permissions:
     shopkeeper.maxshops.unlimited:
         description: Allows the creation of an unlimited number of shops
         default: op
-    # Dynamic max shops permissions: The default max shops limit is configured in the config.
-    # shopkeeper.maxshops.<count>
-    #   description: The maximum number of shops a player can have, only values setup in the config can be used
-    #   default: false
 
     # Shop types:
     shopkeeper.admin:
@@ -208,13 +204,6 @@ permissions:
     shopkeeper.entity.*:
         description: Create shopkeepers of any mob type
         default: true
-    # Dynamic mob type permissions:
-    # You can find all entity type names here:
-    # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html
-    # The permissions use the lower case entity type name.
-    # shopkeeper.entity.<mob-type>:
-    #   description: Create shopkeepers of the specific mob type
-    #   default: false
 
     shopkeeper.trade-notifications.admin:
         description: Receive trade notifications for admin shops
@@ -234,32 +223,4 @@ permissions:
             shopkeeper.help: true
             shopkeeper.reload: true
             shopkeeper.debug: true
-            shopkeeper.cleanup-citizen-shopkeepers: true
-            shopkeeper.list.own: true
-            shopkeeper.list.others: true
-            shopkeeper.list.admin: true
-            shopkeeper.remove.own: true
-            shopkeeper.remove.others: true
-            shopkeeper.remove.admin: true
-            shopkeeper.remove-all.own: true
-            shopkeeper.remove-all.others: true
-            shopkeeper.remove-all.player: true
-            shopkeeper.remove-all.admin: true
-            shopkeeper.give: true
-            shopkeeper.givecurrency: true
-            shopkeeper.updateitems: true
-            shopkeeper.remote: true
-            shopkeeper.remote.otherplayers: true
-            shopkeeper.remoteedit: true
-            shopkeeper.transfer: true
-            shopkeeper.settradeperm: true
-            shopkeeper.setforhire: true
-            shopkeeper.trade: true
-            shopkeeper.hire: true
-            shopkeeper.bypass: true
-            shopkeeper.maxshops.unlimited: true
-            shopkeeper.admin: true
-            shopkeeper.player: true
-            shopkeeper.sign: true
-            shopkeeper.citizen: true
-            shopkeeper.entity.*: true
+            shopkeeper.cleanup: true
