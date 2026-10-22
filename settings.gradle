@@ -1,0 +1,15 @@
+rootProject.name = 'shopkeepers'
+
+def subprojects = [
+	'external-annotations',
+	'api',
+	'main',
+	'v1_21_R1',
+	'dist'
+]
+
+subprojects.each { subproject ->
+	include subproject
+	project(":${subproject}").projectDir = file("modules/${subproject}")
+	project(":${subproject}").name = "shopkeepers-${subproject}"
+}
