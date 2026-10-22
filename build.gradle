@@ -141,7 +141,9 @@ subprojects {
 		mavenCentral()
 
 		// Bukkit, Spigot-API
-		maven { url = 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+		maven { url = 'https://spigotmc.org' }
+		// Repositorio requerido para compilar de forma remota en GitHub Actions:
+		maven { url = 'https://spigotmc.org' }
 	}
 
 	// Shared plugin / task configurations:
@@ -220,9 +222,8 @@ subprojects {
 		processResources {
 			from rootProject.file('LICENSE')
 			from project.sourceSets.main.resources.srcDirs
-			// TODO Some plugins might add resource directories twice.
-			// See https://github.com/gradle/gradle/issues/17236
-			duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+			// Evita que falle el build si hay recursos duplicados entre módulos
+			duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		}
 
 		jar { jarTask ->
