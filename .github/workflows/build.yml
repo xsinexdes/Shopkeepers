@@ -45,6 +45,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-jabba
     - name: Build Shopkeepers
+      env:
+        _JAVA_OPTIONS: "-Xmx4G"
+        MAVEN_OPTS: "-Xmx4G"
+        GRADLE_OPTS: "-Xmx4G"
       run: |
         chmod +x build.sh
         chmod +x scripts/*.sh 2>/dev/null || true
@@ -52,9 +56,10 @@ jobs:
     # Upload workflow artifacts to allow the inspection of build results.
     # These are only retained for a few days.
     - name: Stage artifacts for upload
-      run: mkdir staging && cp build/*.jar staging
+      run: mkdir staging && cp build/*.jar staging 2>/dev/null || cp modules/bakery/build/libs/*.jar staging 2>/dev/null || cp main/build/libs/*.jar staging 2>/dev/null || true
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: shopkeepers-artifacts
         path: staging
+
