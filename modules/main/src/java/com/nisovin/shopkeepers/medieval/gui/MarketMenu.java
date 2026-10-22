@@ -1,0 +1,148 @@
+package com.nisovin.shopkeepers.medieval.gui;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+
+import com.nisovin.shopkeepers.medieval.MedievalEconomy;
+import com.nisovin.shopkeepers.medieval.market.MarketManager;
+
+/** Lista de todos los objetos del mercado con su precio actual y tendencia. */
+public final class MarketMenu extends Menu {
+
+	private static final int PAGE_SIZE = 45;
+
+	private final MarketManager market;
+	private int page;
+	private List<String> keys = new ArrayList<>();
+
+	public MarketMenu(MedievalEconomy economy, Player player, int page) {
+		super(economy, player);
+		this.market = economy.market();
+		this.page = page;
+		create(54, Gui.title(economy,
+				economy.config().getString("gui.titulos.mercado", "&0Mercado del Reino"),
+				Gui.BG_MARKET));
+	}
+
+	public static String percent(double mult) {
+		double pct = (mult - 1.0D) * 100.0D;
+		return String.format(Locale.ROOT, "%s%.0f%%", pct >= 0 ? "+" : "", pct);
+	}
+
+	public static String mult(double mult) {
+		return String.format(Locale.ROOT, "x%.2f", mult);
+	}
+
+	public static String color(double mult) {
+		if (mult >= 1.02D) return "&c"; // Mas caro
+		if (mult <= 0.98D) return "&a"; // Mas barato
+		return "&e";
+	}
+
+	/** Tendencia de la ultima hora. */
+	static double trend(MarketManager market, String key) {
+		List<MarketManager.Sample> history = market.history(key);
+		double now = market.getMultiplier(key);
+		if (history.isEmpty()) return 0.0D;
+		long limit = System.currentTimeMillis() / 60000L - 60L;
+		double old = history.get(0).mult;
+		for (MarketManager.Sample sample : history) {
+			if (sample.minute <= limit) old = sample.mult;
+			else break;
+		}
+		return now - old;
+	}
+
+	@Override
+	protected void render() {
+		keys = new ArrayList<>(market.keys());
+		int pages = Math.max(1, (keys.size() + PAGE_SIZE - 1) / PAGE_SIZE);
+		page = Math.max(0, Math.min(page, pages - 1));
+
+		int start = page * PAGE_SIZE;
+		for (int i = 0; i < PAGE_SIZE && start + i < keys.size(); i++) {
+			String key = keys.get(start + i);
+			Material material = Material.matchMaterial(key);
+			if (material == null || !material.isItem()) continue;
+			double mult = market.getMultiplier(key);
+			double trend = trend(market, key);
+			String arrow = trend > 0.01D ? "&c\u25B2 sube" : trend < -0.01D ? "&a\u25BC baja" : "&e\u25AC estable";
+			List<String> lore = new ArrayList<>();
+			lore.add("&7Precio: " + color(mult) + mult(mult) + " &7(" + color(mult) + percent(mult) + "&7)");
+			lore.add("&7Ultima hora: " + arrow);
+			lore.add("&7Demanda: &f" + String.format(Locale.ROOT, "%.2f", market.getDemand(key)));
+			double eventMult = market.getEventMultiplier(key);
+			if (Math.abs(eventMult - 1.0D) > 0.001D) {
+				lore.add("&7Evento activo: " + color(eventMult) + mult(eventMult));
+			}
+			lore.add("");
+			lore.add("&eClick: &fver grafica de precios");
+			inventory.setItem(i, Gui.item(material, "&f" + MedievalEconomy.pretty(key), lore));
+		}
+
+		boolean pack = Gui.usesBackgrounds(economy);
+		if (!pack) {
+			for (int i = 45; i < 54; i++) inventory.setItem(i, Gui.filler());
+		}
+		if (page > 0) {
+			inventory.setItem(45, Gui.button(economy, Gui.BTN_PREV, Material.ARROW,
+					"&ePagina anterior", "&7Pagina " + page + "/" + pages));
+		}
+		if (page < pages - 1) {
+			inventory.setItem(53, Gui.button(economy, Gui.BTN_NEXT, Material.ARROW,
+					"&ePagina siguiente", "&7Pagina " + (page + 2) + "/" + pages));
+		}
+		List<String> eventLore = new ArrayList<>();
+		List<MarketManager.MarketEvent> events = market.activeEvents();
+		if (events.isEmpty()) {
+			eventLore.add("&7No hay eventos activos.");
+		}
+		for (MarketManager.MarketEvent event : events) {
+			eventLore.add(event.name + " &7(" + mult(event.mult) + ", quedan " + event.minutesLeft() + " min)");
+		}
+		inventory.setItem(47, Gui.button(economy, Gui.BTN_BANNER, Material.WHITE_BANNER,
+				"&6Eventos del mercado", eventLore));
+		inventory.setItem(49, Gui.button(economy, Gui.BTN_CLOSE, Material.BARRIER, "&cCerrar"));
+		inventory.setItem(51, Gui.button(economy, Gui.BTN_BANK, Material.GOLD_BLOCK,
+				"&6Banco del Reino", "&7Click para abrir tu cuenta"));
+		if (keys.isEmpty()) {
+			inventory.setItem(22, Gui.item(Material.PAPER, "&7Aun no hay precios registrados",
+					"&8Se llenara cuando alguien use las tiendas."));
+		}
+	}
+
+	@Override
+	protected void onClick(int slot, ClickType click) {
+		if (slot < 0 || slot >= 54) return;
+		if (slot < PAGE_SIZE) {
+			int index = page * PAGE_SIZE + slot;
+			if (index < keys.size()) {
+				new GraphMenu(economy, player, keys.get(index), 1).open();
+			}
+			return;
+		}
+		switch (slot) {
+		case 45 -> {
+			if (page > 0) {
+				page--;
+				refresh();
+			}
+		}
+		case 53 -> {
+			page++;
+			refresh();
+		}
+		case 51 -> new BankMenu(economy, player).open();
+		case 49 -> player.closeInventory();
+		default -> {
+			// Sin accion.
+		}
+		}
+	}
+}
