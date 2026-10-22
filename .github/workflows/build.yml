@@ -45,7 +45,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-jabba
     - name: Build Shopkeepers
-      run: ./build.sh
+      run: |
+        chmod +x build.sh
+        chmod +x scripts/*.sh 2>/dev/null || true
+        ./build.sh
     # Upload workflow artifacts to allow the inspection of build results.
     # These are only retained for a few days.
     - name: Stage artifacts for upload
@@ -53,4 +56,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
+        name: shopkeepers-artifacts
         path: staging
