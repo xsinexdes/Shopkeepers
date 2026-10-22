@@ -17,6 +17,8 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v4
       with:
+        repository: Shopkeepers/Shopkeepers
+        ref: master
         fetch-depth: 0  # SonarCloud: Shallow clones should be disabled for a better relevancy of analysis
     - name: Set up JDK 21
       uses: actions/setup-java@v4
@@ -53,8 +55,6 @@ jobs:
         chmod +x build.sh
         chmod +x gradlew
         chmod +x scripts/*.sh 2>/dev/null || true
-        # Forzar a Gradle a compilar y publicar primero los subproyectos internos requeridos
-        ./gradlew clean publishToMavenLocal --no-daemon || true
         ./build.sh
     # Upload workflow artifacts to allow the inspection of build results.
     # These are only retained for a few days.
@@ -65,5 +65,6 @@ jobs:
       with:
         name: shopkeepers-artifacts
         path: staging
+
 
 
