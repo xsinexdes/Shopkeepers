@@ -51,6 +51,7 @@ jobs:
         GRADLE_OPTS: "-Xmx4G"
       run: |
         chmod +x build.sh
+        chmod +x gradlew
         chmod +x scripts/*.sh 2>/dev/null || true
         ./build.sh
     # Upload workflow artifacts to allow the inspection of build results.
