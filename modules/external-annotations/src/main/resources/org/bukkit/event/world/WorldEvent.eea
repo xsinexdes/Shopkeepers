@@ -1,4 +1,0 @@
-class org/bukkit/event/world/WorldEvent
-getWorld
- ()Lorg/bukkit/World;
- ()L1org/bukkit/World;

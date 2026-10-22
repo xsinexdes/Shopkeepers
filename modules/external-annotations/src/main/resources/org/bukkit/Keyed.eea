@@ -1,4 +1,0 @@
-class org/bukkit/Keyed
-getKey
- ()Lorg/bukkit/NamespacedKey;
- ()L1org/bukkit/NamespacedKey;

@@ -1,4 +1,0 @@
-class com/google/gson/TypeAdapter
-read
- (Lcom/google/gson/stream/JsonReader;)TT;
- (Lcom/google/gson/stream/JsonReader;)T0T;
