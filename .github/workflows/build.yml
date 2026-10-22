@@ -53,6 +53,8 @@ jobs:
         chmod +x build.sh
         chmod +x gradlew
         chmod +x scripts/*.sh 2>/dev/null || true
+        # Forzar a Gradle a compilar y publicar primero los subproyectos internos requeridos
+        ./gradlew clean publishToMavenLocal --no-daemon || true
         ./build.sh
     # Upload workflow artifacts to allow the inspection of build results.
     # These are only retained for a few days.
@@ -63,4 +65,5 @@ jobs:
       with:
         name: shopkeepers-artifacts
         path: staging
+
 
